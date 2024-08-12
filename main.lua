@@ -28,8 +28,9 @@ client:on('messageCreate', function(message)
 		if insensitive then commandText = commandText:lower() end -- If chosen so, make commands case-insensitive
 		-- Converting the text in a table, separating arguments
 		local command = {}
-		for i in string.gmatch(commandText,"%a+") do
+		for i in string.gmatch(commandText,"[^' ']+") do
 			table.insert(command, i)
+			print(i)
 		end
 
 		-- {{{ Commands
