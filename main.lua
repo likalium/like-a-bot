@@ -24,13 +24,26 @@ client:on('messageCreate', function(message)
 
 	-- Try to execute command only of the message starts with the prefix
 	if message.content:sub(0,prefixLen) == prefix then
-		local command = message.content:sub(prefixLen+1) -- Remove the prefix to only get the command
-		if insensitive then command = command:lower() end -- If chosen so, make commands case-insensitive
+		local commandText = message.content:sub(prefixLen+1) -- Remove the prefix to only get the command
+		if insensitive then commandText = commandText:lower() end -- If chosen so, make commands case-insensitive
+		-- Converting the text in a table, separating arguments
+		local command = {}
+		for i in string.gmatch(commandText,"%a+") do
+			table.insert(command, i)
+		end
 
 		-- {{{ Commands
 		-- Simple ping command to easily check if the bot is connected
-		if command == 'ping' then
+		if command[1] == 'ping' then
 			message.channel:send("Pong!")
+		end
+		-- Test command for args, here only for testing purposes
+		if command[1] == "args" then
+			local msg = ""
+			for i,j in pairs(command) do
+				msg = msg .. tostring(i) .. ": " .. j .. "\n"
+			end
+			message.channel:send(msg)
 		end
 		-- }}}
 	end
