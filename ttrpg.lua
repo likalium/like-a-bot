@@ -4,6 +4,13 @@ local ttrpg = {}
 
 -- Simulates dice throwing, Accepts "3d8"-like notation
 function ttrpg.dice(throw)
+	for i,_ in pairs(throw) do
+		-- No number before the "d" means we throw one dice
+		if string.sub(throw[i], 1, 1) == "d" then throw[i] = 1 .. throw[i] end
+		-- No number after then "d" means we throw a d6
+		if string.sub(throw[i], -1) == "d" then throw[i] = throw[i] .. 6 end
+		print(throw[i])
+	end
 	local output = table.concat(throw, " + ")
 	local diceResults = {}
 	output = output .. " = "
@@ -11,8 +18,6 @@ function ttrpg.dice(throw)
 		-- {{{ Separate parts of the "dice string"
 		local dieTable = {} -- Convert the dice string into a table
 		diceResults[index] ={}
-		print(die, die[1])
-		if string.sub(die, 1, 1) == "d" then table.insert(dieTable, 1) end -- No number before the "d" means we throw one dice
 		for i in die:gmatch("[^d]+") do
 			if tonumber(i) then
 				table.insert(dieTable,tonumber(i))
@@ -20,11 +25,10 @@ function ttrpg.dice(throw)
 				return "Error: Enter valid Input."
 			end
 		end
-		if string.sub(die, 1, -1) == "d" then table.insert(dieTable, 6) end -- No number after then "d" means we throw a d6
 		-- }}}
 		-- {{{ Generate dice results
 		math.randomseed(os.time()) -- Setting the seed to OS time for better randomness
-		if dieTable[1] > 1 then output = output .. "(" end
+		if dieTable[1] > 1 and #throw then output = output .. "(" end
 		for i=1,dieTable[1] do
 			-- Each set of dice results is a table which is inside diceResults
 			diceResults[index][i] = math.random(dieTable[2])
