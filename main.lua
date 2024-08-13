@@ -40,7 +40,10 @@ client:on('messageCreate', function(message)
 		-- {{{ Commands
 		-- Simple ping command to easily check if the bot is connected
 		if command == 'ping' then
+			prior_time = os.clock()
 			message.channel:send("Pong!")
+			current_time = tostring((os.clock()-prior_time)*1000)
+			message.channel:send("Latency for this message was " .. current_time .. "ms.")
 		end
 		-- Test command for args, here only for testing purposes
 		if command == "args" then
