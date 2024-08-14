@@ -11,9 +11,9 @@ function ttrpg.dice(throw)
 		if string.sub(throw[i], -1) == "d" then throw[i] = throw[i] .. 6 end
 	end
 	local output = table.concat(throw, " + ")
+	output = output .. " = "
 	local diceResults = {}
 	diceResults[#throw+1] = {} -- Initializing the table at the very end of diceResults' table that will contain the sums of the dice sets
-	output = output .. " = "
 	for index,die in pairs(throw) do
 		-- {{{ Separate parts of the "dice string"
 		local dieTable = {} -- Convert the dice string into a table

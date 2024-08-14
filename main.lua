@@ -1,25 +1,47 @@
+-- by likalium & procham :)
+
+package.path = package.path .. ";./modules/?.lua" -- Adding our modules folder to the package path
+
 local discordia = require('discordia')
+local lunajson = require("lunajson")
+
 local client = discordia.Client()
 
-local ttrpg = require('ttrpg')
+-- {{{ Loading features files
+local ttrpg = require('ttrpg') -- ttrpg functions
+local money = require('money') -- bot's economy functions
+local misc = require('misc') -- Various useful functions
+-- }}}
 
 -- {{{ Useful variables
 -- Loading token
-local file = io.open("token")
-local token = file:read("*l")
-file:close()
+local tokenFile = io.open("token")
+if not tokenFile then
+	print("Error: No token found. Make sure to have, in the directory of the bot, a tokenFile named 'token' that contains ONLY your bot's token")
+	os.exit()
+end
+local token = tokenFile:read("*l")
+tokenFile:close()
 
-local prefix = ',' -- Change this to the wanted prefix
+-- Loading data.json which will be our "database". Also create it if it doesn't exists
+local jsonFile = io.open("data.json", "a+")
+local dataStr = jsonFile:read("*a")
+jsonFile.close()
+print(dataStr)
+print("ye")
+
+
+local prefix = ',' -- Change this to the wanted default prefix
 local prefixLen = prefix:len()
 
 -- Choose if you want the bot to be case-insensitive or not
 local insensitive = true
+-- }}}
 
 client:on('ready', function()
 	-- client.user is the path for your bot
 	print('Logged in as '.. client.user.username)
 end)
--- }}}
 
 client:on('messageCreate', function(message)
 	if message.author.bot then return end -- Making sure the bot cannot execute commands
@@ -33,25 +55,20 @@ client:on('messageCreate', function(message)
 		for i in commandText:gmatch("[^' ',]+") do
 			table.insert(command, i)
 		end
-		-- Separate main command from args
-		local args = command
-		command = table.remove(args, 1)
+		-- Separate main command from arguments
+		local commandArgs = command
+		command = table.remove(commandArgs, 1)
 
 		-- {{{ Commands
-		-- Simple ping command to easily check if the bot is connected
+		-- See files the functions belong to for description of each command
 		if command == 'ping' then
-			message.channel:send("Pong!")
+			message.channel:send(misc.ping())
 		end
-		-- Test command for args, here only for testing purposes
 		if command == "args" then
-			local msg = ""
-			for i,j in pairs(args) do
-				msg = msg .. tostring(i) .. ": " .. j .. "\n"
-			end
-			message.channel:send(msg)
+			message.channel:send(misc.args(commandArgs))
 		end
 		if command == "dice" then
-			message.channel:send(ttrpg.dice(args))
+			message.channel:send(ttrpg.dice(commandArgs))
 		end
 		-- }}}
 	end
