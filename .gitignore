@@ -1,4 +1,6 @@
-token
 deps
+modules
 gateway.json
 discordia.log
+token
+data.json
