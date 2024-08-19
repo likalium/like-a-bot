@@ -11,6 +11,7 @@ Features:
 DONE:
 
 - [x] Dice throwing command
+- [x] Admins can set a custom prefix for their server
 
 TODO:
 
